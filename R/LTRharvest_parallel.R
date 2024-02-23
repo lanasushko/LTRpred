@@ -2,7 +2,6 @@
 #' @description This function implements an interface between R and
 #' the LTRharvest command line tool to predict putative LTR retrotransposons from R.
 #' @param genome.file path to the genome file in \code{fasta} format.
-#' @param genome.file path to the genome file in \code{fasta} format.
 #' @param index.file specify the name of the enhanced suffix array index file that is computed
 #'  by \code{suffixerator}. This opten can be used in case the suffix file was previously 
 #'  generated, e.g. during a previous call of this function. In this case the suffix array index
@@ -54,20 +53,44 @@
 #' If \code{output.path = NULL} (Default) then a folder with the name of the input genome file
 #' will be generated in the current working directory of R and all results are then stored in this folder.
 #' @param verbose logical value indicating whether or not detailed information shall be printed on the console.
-
+#' @param threads specify the number of threads to be used in parallel.
+#' @param cut.size specify the size in bp of the pieces that the sequence will be cut in (used for running LTRharvest in parallel).
+#' @param time set maximum time for a thread to run. After [time] seconds, the child thread is killed.
 
 # If we want harvest parameters to be modifiable, I should change the shujun's parallel script
 # LTR_HARVEST_parallel_modified2 -seq $seq -threads 10 -size 1000000 -time 300 -try1 1
 
-pathtoltrharvest=''
+pathtoltrharvest='../bin/LTR_HARVEST_parallel'
 
-LTRharvest <- function(seq,
-                       size  = 1000000,
-                       time        = 300,
-                       threads     = 1) {
+LTRharvest <- function(genome.file,
+                       index.file  = NULL,
+                       range       = c(0,0),
+                       seed        = 30,
+                       minlenltr   = 100,
+                       maxlenltr   = 3500,
+                       mindistltr  = 4000,
+                       maxdistltr  = 25000,
+                       similar     = 70,
+                       mintsd      = 4,
+                       maxtsd      = 20,
+                       vic         = 60,
+                       overlaps    = "no",
+                       xdrop       = 5,
+                       mat         = 2,
+                       mis         = -2,
+                       ins         = -3,
+                       del         = -3,
+                       motif       = NULL,
+                       motifmis    = 0,
+                       output.path = NULL,
+                       verbose     = TRUE
+                       threads     = 1
+                       cut.size    = 5000000
+                       time        = 300){
 
 
+harvest_para=paste("-minlenltr", minlenltr, "-maxlenltr", maxlenltr, "-mintsd", mintsd, "-maxtsd", maxtsd, "-motif" motif, "-motifmis", motifmis, "-similar", similar, "-vic", vic, "-seed", seed, "-seqids", "yes")
 
 # To run like from bash
-    system(paste0(pathtoltrharvest,"LTR_HARVEST_parallel_modified -seq  ",seq,"-threads ",threads,"-size ",size,"-time ", time,"-try1 ",1))
+    system(paste0(pathtoltrharvest,"LTR_HARVEST_parallel_modifiableparams -seq  ",genome.file,"-harvest_para ",harvest_para,"-threads ",threads,"-size ",size,"-time ", time,"-try1 ",1))
                        }
