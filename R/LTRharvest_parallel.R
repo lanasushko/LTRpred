@@ -60,9 +60,9 @@
 # If we want harvest parameters to be modifiable, I should change the shujun's parallel script
 # LTR_HARVEST_parallel_modified2 -seq $seq -threads 10 -size 1000000 -time 300 -try1 1
 
-pathtoltrharvest='../bin/LTR_HARVEST_parallel'
+pathtoltrharvest='/tmp/global2/ssushko/intactLTR_treeoflife/dev_LTRpred/LTRpred2/bin/LTR_HARVEST_parallel/'
 
-LTRharvest <- function(genome.file,
+LTRharvest_par <- function(genome.file,
                        index.file  = NULL,
                        range       = c(0,0),
                        seed        = 30,
@@ -83,14 +83,16 @@ LTRharvest <- function(genome.file,
                        motif       = NULL,
                        motifmis    = 0,
                        output.path = NULL,
-                       verbose     = TRUE
-                       threads     = 1
-                       cut.size    = 5000000
+                       verbose     = TRUE,
+                       threads     = 1,
+                       cut.size    = 5000000,
                        time        = 300){
 
 
-harvest_para=paste("-minlenltr", minlenltr, "-maxlenltr", maxlenltr, "-mintsd", mintsd, "-maxtsd", maxtsd, "-motif" motif, "-motifmis", motifmis, "-similar", similar, "-vic", vic, "-seed", seed, "-seqids", "yes")
+    harvest_para=paste("-minlenltr", minlenltr, "-maxlenltr", maxlenltr, "-mintsd", mintsd, "-maxtsd", maxtsd, "-motif", motif, "-motifmis", motifmis, "-similar", similar, "-vic", vic, "-seed", seed, "-seqids", "no")
 
-# To run like from bash
-    system(paste0(pathtoltrharvest,"LTR_HARVEST_parallel_modifiableparams -seq  ",genome.file,"-harvest_para ",harvest_para,"-threads ",threads,"-size ",size,"-time ", time,"-try1 ",1))
+    message("Run LTRharvest...")
+
+    system(paste0(pathtoltrharvest,"LTR_HARVEST_parallel_modifiableparams -seq  ",genome.file," -harvest_para ",harvest_para," -threads ",threads," -size ",cut.size," -time ", time," -try1 ","1"," -gt ","/tmp/global2/ssushko/conda/envs/EDTA/bin/gt"))
+    # system(paste0(pathtoltrharvest,"LTR_HARVEST_parallel_modifiableparams -seq  ",genome.file," -harvest_para ",harvest_para," -threads ",threads," -size ",cut.size," -time ", time," -try1 ","1"," -gt ","/usr/bin/gt"," > out.out"))
                        }
